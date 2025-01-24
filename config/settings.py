@@ -44,6 +44,7 @@ CUSTOM_APPS = [
     "reservations.apps.ReservationsConfig",
     "medias.apps.MediasConfig",
     "direct_messages.apps.DirectMessagesConfig",
+    "tweets.apps.TweetsConfig",
 ]
 
 SYSTEM_APPS = [
