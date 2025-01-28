@@ -33,6 +33,14 @@ class Room(CommonModel):
     def total_amenities(self):
         print(self)
         return self.amenities.count()
+    
+    def rating(self):
+        tot_rating = 0
+        if self.reviews.count() == 0:
+            return "No Reviews"
+        for review in self.reviews.all():
+            tot_rating += review.rating
+        return tot_rating / self.reviews.count()
 
 
 

@@ -11,7 +11,7 @@ class RoomAdmin(admin.ModelAdmin):
         "kind",
         "owner",
         "pet_friendly",
-        "total_amenities",
+        "rating",
         "created_at",
     )
 
@@ -31,6 +31,13 @@ class RoomAdmin(admin.ModelAdmin):
     def total_amenities(self, room):
         print(room.amenities.all())
         return room.amenities.count()
+
+    # model로 옮김
+    # def average_reviews(self, room):
+    #     tot_reviews = 0
+    #     for review in room.reviews.all():
+    #         tot_reviews += review.rating;
+    #     return tot_reviews / room.reviews.count();
 
 
 @admin.register(Amenity)
