@@ -34,3 +34,24 @@ for review in room.review.all().values('rating'):
 ## custom filter
 - foreign key로 filter를 추가하고 싶을 때
 - `list_filter = ('user__username',)` : city로 filter를 추가함.
+- `room__category`를 했다가 지우고 새로고침 시 에러가 나는 오류가 있었음. 그러나 이건 버그였고, 최신 버전에서는 고쳐졌다고 함.
+- 정리해보자면 foreign key로 filtering을 할 때, __가 없으면 __str__ 값으로 필터링. __를 사용하면 foreign key의 속성으로 필터링 할 수 있음
+- 그 속성 또한 foreign key일 경우, __를 연이어서 사용하면 그 속성의 속성으로 필터링 할 수 있음.
+- `list_filter = ("rating", "room__owner__is_host", )` 이런 식으로 사용할 수 있음.
+### review 내 특정 단어가 포함되는 필터 만들기
+```python
+class WordFilter(admin.SimpleListFilter):
+    title = "filter by word"
+
+```
+- `SimpleListFiter`는 title, parameter_name, lookups(method), queryset(method)를 필요로 함.
+- `lookupx\s` method는 self, request, model_admin을 받고, tuple list를 반환해야 함.
+- tuple의 첫번째 값은 url에 나타날 것, 두번째 값은 admin panel에 나타날 것.
+- `queryset` method는 self, request, queryset(filtering할 reviews)을 받고, queryset을 반환해야 함.
+- queryset을 console에 출력 시, filter 위치에 따라 결과값이 다름.
+- `request.GET`을 출력하면, url에 있는 query string을 출력함. 이 query string은 dictionary임.
+- 이 query string을 보고 filtering 할 것을 알 수 있음.
+- 물론 다른 쉬운 방법으로는 `self.value()`를 사용할 수 있음.
+- action과 마찬가지로 다른 파일에 작성해도 되지만, admin class내에 입력해주어야 함.
+- filter의 경우, list_filter에 추가할 때 ""를 사용하지 않는다는 것을 기억하기
+- 뒤로가기 등으로 word가 none이 되는 경우 받은 query set 그대로 반환해주기
