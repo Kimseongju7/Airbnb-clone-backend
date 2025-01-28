@@ -25,3 +25,6 @@ class User(AbstractUser):
     currency = models.CharField(max_length=5, choices=CurrencyChoices.choices, )
     # 아무런 영향이 없음
     # rooms = ["room1", "room2", "room3", "room4", "room5", "room6", "room7", "room8", "room9", "room10", ]
+
+    def __str__(self):
+        return self.username
