@@ -19,3 +19,18 @@ for review in room.review.all().values('rating'):
 ### foreign key로 search하기
 - username으로 search하고 싶을 때
 - `search_fields = ('owner__ username',)` : 이렇게 하면 username으로 검색할 수 있음.
+
+## admim action
+- admin panel에서 action들을 추가할 수 있음.
+- `@admin.action` decorator를 사용함.
+- `def make_published(modeladmin, request, queryset):` : action을 정의함.
+- admin action은 3개의 매개변수를 필요로 함
+- modeladmin : admin class. 이 action을 호출하는 class
+- request : request object. 이 action을 누가 호출했는 지에 대한 정보를 담고 있음.
+- request.user : 이 action을 호출한 user에 대한 정보를 담고 있음. superuser인지에 따라 action을 실행할 지 말지도 결정할 수 있음.
+- queryset : 선택된 object들. 선택 모든 객체의 list
+- 해당하는 class에서 `actions = ['make_published']`를 추가함.
+
+## custom filter
+- foreign key로 filter를 추가하고 싶을 때
+- `list_filter = ('user__username',)` : city로 filter를 추가함.
