@@ -5,28 +5,15 @@ from .models import Room, Amenity
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = (
-        "name",
-        "country",
-        "price",
-        "kind",
-        "owner",
-        "pet_friendly",
-        "rating",
-        "created_at",
+        "name", "country", "price", "kind", "owner",
+        "pet_friendly", "rating", "created_at",
     )
 
     list_filter = (
-        "category",
-        "country",
-        "city",
-        "rooms",
-        "toilets",
-        "kind",
-        "pet_friendly",
-        "amenities",
-        "created_at",
-        "updated_at",
+        "category", "country", "kind", "pet_friendly",
     )
+
+    search_fields = ("name", "owner__username",)
 
     def total_amenities(self, room):
         print(room.amenities.all())
