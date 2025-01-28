@@ -38,9 +38,14 @@ class Room(CommonModel):
         tot_rating = 0
         if self.reviews.count() == 0:
             return "No Reviews"
-        for review in self.reviews.all():
-            tot_rating += review.rating
-        return tot_rating / self.reviews.count()
+        # query set은 게으르기에 데이터를 즉시 가지고 오지 않고, 사용할 때 가지고 옴.
+        # 아래 코드에서는 가지고 오지 않음
+        # self.review.all();
+        # 여기서 database에서 가져옴
+        for review in self.reviews.all().values("rating"):
+            tot_rating += review["rating"]
+        #소수점 이하 2자리까지만 표시
+        return round(tot_rating / self.reviews.count(), 2)
 
 
 
