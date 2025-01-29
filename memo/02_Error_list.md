@@ -36,3 +36,13 @@ IndentationError: unexpected indent
 ```
 - 들여쓰기 에러. 들여쓰기가 잘못되어 있음.
 - `from django.db import models` 앞에 띄어쓰기 하나 있었음.
+### TypeError at /rooms/
+```text
+say_hello() takes 0 positional arguments but 1 was given
+```
+- 함수에 인자를 넣었는데 인자를 받지 않는 함수에 인자를 넣어서 발생하는 에러.
+### AttributeError at /rooms/
+```text
+'str' object has no attribute 'get'
+```
+- str object에 get 메소드를 사용하려고 해서 발생하는 에러.
