@@ -58,3 +58,27 @@ def list_categories(request):
 - `serializers.py` 파일에 `CategorySerializer`를 만들어야 함.
 - all_categories를 넘겨줄 때, category의 list를 넘겨준다면, many=True로 설정해야 함.
 - serializer는 json으로 변환해주는 번역기 일 뿐이라는 것을 기억하기.
+### post method
+- post method는 새로운 category를 만들 때 사용.
+ - `@api_view(['GET', 'POST'])`로 설정해야 함.
+- web에서 post 요청을 test할 수 있는 form을 갖게 됨.
+- user가 준 data는 `request.data`로 가져올 수 있음
+- serializer는 python, Django -> json으로 변환해주지만, json (user data) -> python, Django으로 변환할 수도 있음.
+- 즉, serializer는 user로부터 data를 받아 django model을 만들기 위해서도 필요함.
+- user로 부터 온 data를 그대로 database에 넣을 수 없음. serializer를 통해 data를 검증해야 함.
+- json -> python, django 변역 방법은 다음과 같음.
+- `serializer = CategorySerializer(data=request.data)`로 serializer를 만들고, `serializer.is_valid()`로 data가 유효한지 확인함.
+1. python -> json : serializer의 첫번째 인자, instance에 python object를 넣어주면 됨.
+2. json -> python : serializer의 data에 json data를 넣어주면 됨.
+- `serializer.errors`로 에러를 확인할 수 있음.
+- post 시 필수 항목에서 제외하는 방법은 `read_only=True`를 사용하면 됨.
+- user에게서 온 data로 serializer를 만들고 save()를 실행하면, 자동으로 `create method`를 찾음.
+- 이 create method는 우리가 정의해주어야 함.
+- 그리고 이 create method는 새로는 객체를 return하거나, error를 발생시켜야 함.
+- `Category.objects.create(**serializer.validated_data)`로 새로운 category를 만들 수 있음.
+- `**validated_data`는 dictionary를 unpacking하는 방법.
+```python
+name = "Category from DRF",
+kind = "rooms"
+```
+- 이렇게 바꿔줌
