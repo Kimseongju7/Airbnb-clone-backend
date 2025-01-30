@@ -96,3 +96,7 @@ kind = "rooms"
 - 모든 dictionary는 `get method`를 가지고 있음. `get method`는 key를 받아서 value를 return해줌.
 - 존재하지 않는 키면, None을 return하거나 다른 인자로 주어지는 default 값을 return해줌.
 - `update method` 역시 무언가를 return 해야 함. update한 instance를 return해주면 됨.
+## url
+- 서버 내부의 page가 아닌 api url이라는 것을 알리기 위해
+- `config/urls.py`에 `path('api/v1/', include('categories.urls'))`로 설정함.
+- version을 붙여주는 이유는, api가 변경될 수 있기 때문. 붙여주는 것이 좋음.
