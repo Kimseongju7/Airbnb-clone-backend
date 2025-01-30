@@ -38,3 +38,23 @@
 - Django Rest Framework는 Django에서 API를 쉽게 만들 수 있게 해주는 프레임워크.
 - 어떤 url에서, 어떤 view 함수에서 django Rest framework의 도움을 받을 지 선택할 수 있음.
 - 그래서 어떤 부분에서 도움받을 지 설정해주어야 함.
+- 설정 방법 : decorator 사용
+```python
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view()
+def list_categories(request):
+    categories = Category.objects.all()
+    return Response("hello")
+```
+- application을 개발할 때 사용할 수 있는 page를 보여줌.
+- status, status code, method, response, url, login user 등을 알려줌
+- 여기서 해야 할 것은 @로 api_view라는 거 알려주기, Response를 return해주기.
+### 우선 수동으로 해보기
+- Rest Framework 역시 queryset을 json으로 변환해주는 serializer를 사용해야 함.
+- `serializers.py` 파일을 만들어서 serializer를 만들어야 함. (django의 serializer는 custom 불가하기에 rest에서 제공하는 것을 사용하여 만듦.)
+- 여기서 category가 json으로 어떻게 표현될 지 알려주어야 함.
+- `serializers.py` 파일에 `CategorySerializer`를 만들어야 함.
+- all_categories를 넘겨줄 때, category의 list를 넘겨준다면, many=True로 설정해야 함.
+- serializer는 json으로 변환해주는 번역기 일 뿐이라는 것을 기억하기.

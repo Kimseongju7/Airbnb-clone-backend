@@ -1,12 +1,15 @@
 from django.shortcuts import render
 from .models import Category
-from django.http import JsonResponse
-from django.core import serializers
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import CategorySerializer
 
 # Create your views here.
+@api_view()
 def categories(request):
     all_categories = Category.objects.all()
-    return JsonResponse({
+    serializer = CategorySerializer(all_categories, many=True)
+    return Response({
         "ok": True,
-        "categories": serializers.serialize("json", all_categories),
+        "categories": serializer.data
     })
