@@ -82,3 +82,17 @@ name = "Category from DRF",
 kind = "rooms"
 ```
 - 이렇게 바꿔줌
+### put method
+- put method는 특정 category를 업데이트할 때 사용.
+- `@api_view(['GET', 'PUT'])`로 설정해야 함.
+- 특정 카테고리를 가져올 때 `Category.objects.get(pk=pk)`로 가져올 수 있는데, 
+- `Category.DoesNotExist`가 발생한다면 404를 return해야 함.
+- `raise NotFound` 발생시키기. `from rest_framework.exceptions import NotFound`
+- `serializer = CategorySerializer(category, data=request.data)`로 serializer를 만들어줌.
+- `serializer.is_valid()`로 data가 유효한지 확인함.
+- 또한 database에게 우리가 하려는 건 갱신이라는 것을 알려주어야 함. = user가 주는 data가 완전하지 않을 수도 있다는 것일 알려주어야 함.
+- `serializer(partial=True)`로 부분적인 업데이트를 허용해줌.
+- `put method`에서 `serializer.save()`를 실행하면, 자동으로 `update method`를 찾음. (serializer가 object와 user data를 모두 받는 경우)
+- 모든 dictionary는 `get method`를 가지고 있음. `get method`는 key를 받아서 value를 return해줌.
+- 존재하지 않는 키면, None을 return하거나 다른 인자로 주어지는 default 값을 return해줌.
+- `update method` 역시 무언가를 return 해야 함. update한 instance를 return해주면 됨.
