@@ -100,3 +100,11 @@ kind = "rooms"
 - 서버 내부의 page가 아닌 api url이라는 것을 알리기 위해
 - `config/urls.py`에 `path('api/v1/', include('categories.urls'))`로 설정함.
 - version을 붙여주는 이유는, api가 변경될 수 있기 때문. 붙여주는 것이 좋음.
+---
+# Django Rest Framework
+## APIView
+- Django Rest Framework는 Django에서 API를 쉽게 만들 수 있게 해주는 프레임워크.
+- `GET, POST, PUT, DELETE` 등을 내부에 가지고 있음.
+- url을 `view.CategroyList.as_view()`로 설정해주어야 함. 이건 규칙.
+- API의 상세한 부분, object 1개 이렇게 찾을 때 (ex Category class) 항상 `get_object`로 객체를 가져온 뒤, `get, put, delete`에 공유하기.
+- parameter가 있는 경우 `get, put, delete`에 parameter를 넣어주어야 함.
