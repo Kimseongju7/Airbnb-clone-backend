@@ -123,3 +123,12 @@ class Meta:
     exclude = ['created_at'] #어떤 것을 안 보이게 할 지. 
 ```
 - 둘 중 하나를 선택하면 됨.
+## ViewSet
+- `from rest_framework.viewsets import ModelViewSet`로 import
+- `ModelViewSet`은 `APIView`와 비슷하지만, `GET, POST, PUT, DELETE`를 자동으로 만들어줌.
+- `ModelViewSet`은 `queryset`(object)과 `serializer_class`를 설정해주어야 함.
+- `queryset`은 어떤 object를 보여줄 지 설정해주어야 함.
+- urls에서 method를 설정해주어야 함. = HTTP method와 class method를 연결해주어야 함. -> `router`를 사용할 수도 있음
+- `list, create`를 제외한 `retrieve(여러 개 중에 하나만 보여주는 get), update, destroy`는 pk를 받도록 설정되어 있음. url에서 pk를 받아야 함.
+- ViewSet은 ViewSet이 할 수 있는 일만 할 때는 매우 유용하지만, view를 custom하게 만들 때는 `APIView`를 사용하는 것이 좋음.
+- Serializer는 마법을 써도 되지만, View는 custom 해야 하는 경우가 많아 `APIView`를 사용하는 것이 좋음.
