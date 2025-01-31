@@ -108,3 +108,18 @@ kind = "rooms"
 - url을 `view.CategroyList.as_view()`로 설정해주어야 함. 이건 규칙.
 - API의 상세한 부분, object 1개 이렇게 찾을 때 (ex Category class) 항상 `get_object`로 객체를 가져온 뒤, `get, put, delete`에 공유하기.
 - parameter가 있는 경우 `get, put, delete`에 parameter를 넣어주어야 함.
+## Model Serializer
+- 자동으로 serializer를 만들어주는 class.
+- model을 보고 model에 있는 것들을 가져와서 사용함.
+- 자동으로 `create, update` method를 만들어줌.
+- 일반적은 serializer와 거의 같지만, model의 field를 자동으로 가져오고, `create, update` method를 자동으로 만들어주는 차이점이 있음.
+### 방법
+1. `serializer.ModelSerializer`를 상속.
+2. `class Meta`를 통해 serializer configure
+```python
+class Meta:
+    model = Category #어떤 model을 위한 serializer인지.
+    fields = '__all__' #model의 field 중 어떤 것을 보이게 할 지.
+    exclude = ['created_at'] #어떤 것을 안 보이게 할 지. 
+```
+- 둘 중 하나를 선택하면 됨.
