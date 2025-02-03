@@ -1,4 +1,4 @@
-# Django Rest API
+# Django Rest Framework
 - Django Rest Framework는 산업 표준. 
 1. Django Rest Framework 설치
 2. `config/settings.py`에 `rest_framework` 추가
