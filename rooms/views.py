@@ -1,10 +1,64 @@
 from django.core.serializers import serialize
 from rest_framework.views import APIView
-from .models import Amenity
-from .serializers import AmenitySerializer
+from .models import Amenity, Room
+from categories.models import Category
+from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError
 from rest_framework.status import HTTP_204_NO_CONTENT
+
+class Rooms(APIView):
+    def get(self, request):
+        rooms = Room.objects.all();
+        return Response(RoomListSerializer(rooms, many=True).data)
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            serializer = RoomDetailSerializer(data = request.data)
+            if serializer.is_valid():
+                # check if category is valid
+                category_pk = request.data.get("category")
+                if not category_pk:
+                    raise ParseError("Category is required")
+                try:
+                    category = Category.objects.get(pk = category_pk)
+                except Category.DoesNotExist:
+                    raise ParseError(f"Category_pk : {category_pk} does not exist")
+                if category.kind == Category.CategoriesKindChoices.EXPERIENCES:
+                    raise ParseError("Category kind should be a room")
+                new_room = serializer.save(
+                    owner=request.user,
+                    category = category
+                )
+                # add amenities
+                amenities = request.data.get("amenities")
+                for amenity_pk in amenities:
+                    try:
+                        amenity = Amenity.objects.get(pk=amenity_pk)
+                    except Amenity.DoesNotExist:
+                        new_room.delete()
+                        raise ParseError(f"Amenity_pk : {amenity_pk} does not exist. Room creation failed")
+                    new_room.amenities.add(amenity)
+                return Response(RoomDetailSerializer(new_room).data)
+            else:
+                return Response(serializer.errors)
+        else:
+            raise NotAuthenticated
+
+
+class RoomDetail(APIView):
+
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk = pk)
+        except Room.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        room = self.get_object(pk)
+        return Response(RoomDetailSerializer(room).data)
+
+
 
 class Amenities(APIView):
     def get(self, request):
