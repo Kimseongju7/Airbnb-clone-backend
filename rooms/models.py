@@ -37,7 +37,7 @@ class Room(CommonModel):
     def rating(self):
         tot_rating = 0
         if self.reviews.count() == 0:
-            return "No Reviews"
+            return 0
         # query set은 게으르기에 데이터를 즉시 가지고 오지 않고, 사용할 때 가지고 옴.
         # 아래 코드에서는 가지고 오지 않음
         # self.review.all();
