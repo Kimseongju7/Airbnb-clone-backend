@@ -1,4 +1,4 @@
-from users.serializer import TinyUserSerializer
+from PIL.ImtImagePlugin import fieldfrom django.utils.archive import extractfrom users.serializer import TinyUserSerializer
 
 ## Room api urls
 - authetication, relationship 필요
@@ -70,3 +70,16 @@ amenities = AmenitySerializer(many=True)
 - transaction을 try로 밖에서 감싸 user에게 에러 원인을 알려줌
 - API로 보면 실행 결과는 같지만, DB에 적용되는 방식이 다름.
 - transaction은 모든 code가 한번에 적용되길 바랄 때 사용함.
+---
+## Serializer custom method
+- 요청한 데이터를 계산해서 field로 하거나, 요청자에 따라 다른 정보를 보여주고 싶을 때 사용함.
+- `serializers.SerializerMethodField()`를 사용하여 custom method를 만들어 사용함.
+### average room rating
+```python
+# rooms.serializers.RoomSerializer
+average_rating = serializers.SerializerMethodField() # average_rating의 값을 계산할 method를 만들 것이라고 알려주는 것.
+#method의 이름은 속성 이름 앞에 get을 붙인 것이어야 함.
+def get_average_rating(self, room): # room는 serializer가 serialize하고 있는 instance
+    return room.rating()
+fields = ('average_rating',) # average_rating을 보여주기 위해 fields에 추가
+```
