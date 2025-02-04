@@ -54,3 +54,19 @@ amenities = AmenitySerializer(many=True)
 - amenity의 경우 room 생성 시 없을 수도 있음. 그래서 save method에 인자로 넘겨주지 않고, user가 amenity를 넘겨준 경우 room 생성 후에 추가할 것임.
 - amenity는 many to many field이기에, 생성된 `room.amenities.add()`를 이용하여 추가하면 됨.
 - (foreign key의 경우, room.amenities = amenity로 할당하면 됨.)
+- user가 존재하지 않는 amenity를 넘겨주는 경우, 조용히 넘어갈 것인가, error를 발생시키면서 생성된 room을 삭제할 것인가?
+### transaction
+- 생성 후 삭제는 id를 낭비하게 됨.
+- room 생성 시, owner, category, amenities를 모두 성공적으로 생성해야 room을 생성할 수 있음.
+- 이를 위해 `transaction.atomic()`을 사용하여, 모든 작업이 성공적으로 이루어지지 않으면 rollback을 하도록 할 것임.
+- 모든 코드가 성공하거나, 아무것도 성공하지 않기를 원할 때 사용함.
+- 코드 조각을 만들어 그 중 하나라도 실패한다면 DB에 적용됨 변경사항이 모두 rollback됨.
+- `django.db.transaction`을 import하여 사용
+- 원래는 code를 실행할때마다, 쿼리가 즉시 데이터 베이스에 적용되는데 
+- `with transaction.atomic():` 안에 코드를 넣게 되 django는 즉시 반영하지 않음.
+- 코드를 살펴보면서 변경사항을 리스트로 만들어 에러가 발생하지 않으면 변경사항 리스트를 DB로 push.
+- 에러가 발생하면 변경사항 리스트를 모두 rollback. 반영하지 않음.
+- 단, try문은 삭제해야 함. transaction이 에러 발생을 알지 못하게 하기 때문.
+- transaction을 try로 밖에서 감싸 user에게 에러 원인을 알려줌
+- API로 보면 실행 결과는 같지만, DB에 적용되는 방식이 다름.
+- transaction은 모든 code가 한번에 적용되길 바랄 때 사용함.

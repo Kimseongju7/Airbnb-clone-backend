@@ -6,6 +6,7 @@ from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerial
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError
 from rest_framework.status import HTTP_204_NO_CONTENT
+from django.db import transaction
 
 class Rooms(APIView):
     def get(self, request):
@@ -26,20 +27,20 @@ class Rooms(APIView):
                     raise ParseError(f"Category_pk : {category_pk} does not exist")
                 if category.kind == Category.CategoriesKindChoices.EXPERIENCES:
                     raise ParseError("Category kind should be a room")
-                new_room = serializer.save(
-                    owner=request.user,
-                    category = category
-                )
-                # add amenities
-                amenities = request.data.get("amenities")
-                for amenity_pk in amenities:
-                    try:
-                        amenity = Amenity.objects.get(pk=amenity_pk)
-                    except Amenity.DoesNotExist:
-                        new_room.delete()
-                        raise ParseError(f"Amenity_pk : {amenity_pk} does not exist. Room creation failed")
-                    new_room.amenities.add(amenity)
-                return Response(RoomDetailSerializer(new_room).data)
+                try:
+                    with transaction.atomic():
+                        new_room = serializer.save(
+                            owner=request.user,
+                            category = category
+                        )
+                        # add amenities
+                        amenities = request.data.get("amenities")
+                        for amenity_pk in amenities:
+                            amenity = Amenity.objects.get(pk=amenity_pk)
+                            new_room.amenities.add(amenity)
+                        return Response(RoomDetailSerializer(new_room).data)
+                except Exception:
+                    raise ParseError("Amenity not found")
             else:
                 return Response(serializer.errors)
         else:
