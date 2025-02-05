@@ -20,3 +20,18 @@
 - 자신의 password만 바꿀 수 있게, user에게서 기존 비밀번호와 새로운 비밀번호를 받아 기존의 비밀번호를 알고 있을 경우에만 바꿀 수 있게.
 - 이때 old_password를 비교할 때는 hash를 비교해야 한다.
 - `user.check_password(old_password)`로 비교한다.
+### User Login API
+- `from django.contrib.auth import authenticate, login`로 authenticate 함수를 import한다.
+- `authenticate(request, username=username, password=password)`로 user를 찾아낸다.
+- user가 없거나 password가 틀리면 None을 반환한다.
+- user가 있으면 user object를 반환한다.
+- user가 있으면 `login(request, user)`로 user를 login한다.
+- `login(request, user)`로 user를 login한다. 필요한 cookie, token 중요한 거는 다 생성해준다.
+- login 시 user 정보가 담긴 session이 생성된다.
+- session은 django에서 제공하는 기능으로, user가 로그인 상태를 유지할 수 있게 해준다.
+- session은 cookie에 저장된다.
+### logout
+- `from django.contrib.auth import logout`로 logout 함수를 import한다.
+- `logout(request)`로 logout한다.
+- logout 시 session이 삭제된다.
+- 

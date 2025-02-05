@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from reviews.serializers import ReviewSerializer
 from rest_framework import status
+from django.contrib.auth import authenticate, login, logout
 
 
 class Me(APIView):
@@ -126,3 +127,26 @@ class ChangePassword(APIView):
         user.set_password(new_password)
         user.save()
         return Response(status=status.HTTP_200_OK)
+
+class LogIn(APIView):
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        if not username or not password:
+            raise ParseError("Username and password are required")
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return Response("Logged in")
+        else:
+            raise ParseError("Wrong username or password")
+
+
+class LogOut(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return Response("Logged out")
