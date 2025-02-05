@@ -103,3 +103,11 @@ serializer = serializers.RoomSerializer(data=request.data, context={'user': requ
 - 즉 dynamic field를 만들 수 있음.
 - `rooms.serializers.UserDateilSerializer.get_is_oowner` 참고
 - 인스타그램 좋아요 필드가 좋은 예시
+
+## Reverse Serializer
+- room에 대해 작성된 review를 보여주려고 함.
+- review에 대한 serializer를 만들어야 함.
+- 역접근자를 이용하면 됨. relative_name을 field에 넣어주고 만든 serializer를 사용하면 됨.
+- 단, 역접근자를 field에 포함하는 것은 데이터 베이스를 죽일 수 있으므로 좋은 생각이 아님.
+- 역접근자를 위헤서는 pagination을 사용해야 함.
+- 한번에 모든 review를 가져오는 것은 좋은 생각이 아님.
