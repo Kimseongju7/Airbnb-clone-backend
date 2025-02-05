@@ -111,3 +111,22 @@ serializer = serializers.RoomSerializer(data=request.data, context={'user': requ
 - 단, 역접근자를 field에 포함하는 것은 데이터 베이스를 죽일 수 있으므로 좋은 생각이 아님.
 - 역접근자를 위헤서는 pagination을 사용해야 함.
 - 한번에 모든 review를 가져오는 것은 좋은 생각이 아님.
+
+## Pagination
+- 한번에 모든 데이터를 가져오는 것은 좋은 생각이 아님.
+- pagination을 사용하여 데이터를 나눠서 보여주는 것이 좋음.
+- 다행히도 django는 pagination을 지원함.
+1. 먼저 page 인자를 가지고 와야 함. 
+   - `request.query_params`로 쿼리 확인해볼 수 있음.
+   - `request.query_params.get('page', 1)`로 page를 가져올 수 있음. 기본값 1
+   - (dictionary의 get method는 기본값을 지정할 수 있다는 거 기억. 'page'가 없을 경우 1을 반환)
+2. page 인자 문자열 -> 숫자로 변환
+   - `page = int(page)`
+     - page가 숫자가 아닌 경우, 에러 발생. 이를 방지하기 위해 try except를 사용함. (ValueError)
+3. 한번에 가져올 개수 지정
+   - `room.reivews.all()[start:end]`로 가져올 수 있음.
+   - `page_size = 3`로 지정
+- Django의 장점은 `room.reivews.all()[start:end]` 이 code에서 볼 수 있음
+- reviews를 전부 다 가져온 후 slicing을 하는 것이 아님.
+- queryset은 게으름. = 즉각적으로 평가되지 않음.
+- 그래서 모든 걸 가져오는 게 아니라 limit와 offset을 포함하는 sql문을 데이터 베이스로 보냄.
