@@ -5,9 +5,11 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, ParseError
 from tweets.models import Tweet
 from tweets.serializers import TweetSerializer
-from .serializers import UserListSerializer, UserDetailSerializer, PrivateUserSerializer
+from .serializers import UserListSerializer, UserDetailSerializer, PrivateUserSerializer, PublicUserSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from reviews.serializers import ReviewSerializer
+from rest_framework import status
 
 
 class Me(APIView):
@@ -26,6 +28,20 @@ class Me(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+class PublicUser(APIView):
+
+    def get_object(self, username):
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, username):
+        user = self.get_object(username)
+        serializer = PublicUserSerializer(user)
+        return Response(serializer.data)
+
 
 
 class Users(APIView):
@@ -75,4 +91,18 @@ class UserTweets(APIView):
     def get(self, request, pk):
         tweets = Tweet.objects.filter(user=self.get_object(pk))
         serializer = TweetSerializer(tweets, many=True)
+        return Response(serializer.data)
+
+
+class UserReviews(APIView):
+
+    def get_object(self, username):
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, username):
+        user = self.get_object(username)
+        serializer = ReviewSerializer(user.reviews.all(), many=True)
         return Response(serializer.data)

@@ -9,3 +9,18 @@
 4. `user.save()`
 - put하거나 post 할 때, 없는 field의 값이 들어와도 괜찮네. 그래서 serializer에 password가 지정되어 있지 않아도 user가 password data를 보낼 수 있는 듯.
 - 이 API에서 생성된 user는 admin panel에 login 하지 못 함. is_staff, is_superuser가 False이기 때문.
+## `api/v1/users/username/` API
+- urls.py에 `path('<str:username>/')` 그냥 추가하면 안 됨.
+- `path("me/`) 가 이미 있기 떄문.
+- urlpattern 순서가 중요하다. `path("me/`)를 `path('<str:username>/')`보다 위에 두어야 한다.
+- 순서대로 일치하는 지 확인하기 때문.
+- 근데 'me'라는 username을 가진 user가 있다면 어떻게 해야 할
+- `path('@<str:username>/')` 이런 식으로 하면 됨.
+
+[//]: # (### Change Password API)
+
+[//]: # (- 자신의 password만 바꿀 수 있게, user에게서 기존 비밀번호와 새로운 비밀번호를 받아 기존의 비밀번호를 알고 있을 경우에만 바꿀 수 있게.)
+
+[//]: # (- 이때 old_password를 비교할 때는 hash를 비교해야 한다.)
+
+[//]: # (- `user.check_password&#40;old_password&#41;`로 비교한다.)

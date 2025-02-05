@@ -1,5 +1,9 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework.views import APIView
+
 from .models import User
+from reviews.serializers import ReviewSerializer
+from rest_framework import serializers
 
 class TinyUserSerializer(ModelSerializer):
     class Meta:
@@ -10,7 +14,7 @@ class TinyUserSerializer(ModelSerializer):
 class UserListSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ("pk", "avatar", "username", "name", "gender", "language", "currency", )
+        fields = ("pk", "username", "name", "gender", "language", "currency", )
 
 
 class UserDetailSerializer(ModelSerializer):
@@ -33,3 +37,14 @@ class PrivateUserSerializer(ModelSerializer):
             "groups",
             "user_permissions",
         )
+
+
+class PublicUserSerializer(ModelSerializer):
+    reviews = ReviewSerializer(many=True)
+    number_of_rooms = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ("avatar", "username", "name", "gender", "language", "currency", "reviews", "number_of_rooms", )
+
+    def get_number_of_rooms(self, user):
+        return user.rooms.count();
