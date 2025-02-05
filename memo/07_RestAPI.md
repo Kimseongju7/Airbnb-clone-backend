@@ -83,3 +83,23 @@ def get_average_rating(self, room): # room는 serializer가 serialize하고 있�
     return room.rating()
 fields = ('average_rating',) # average_rating을 보여주기 위해 fields에 추가
 ```
+### serializer context
+- serializer에 context를 넘겨줄 수 있음.
+- 내가 원하는 데이터를 넘겨줄 수 있음
+```python
+# rooms.serializers.RoomSerializer
+class RoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Room
+        fields = '__all__'
+    def create(self, validated_data):
+        print(self.context)
+
+# rooms.views
+serializer = serializers.RoomSerializer(data=request.data, context={'user': request.user, "request": request})
+```
+- 이런 data들을 넘겨주면, serializer에서 이를 사용할 수 있음.
+- 이를 사용하면, 요청하는 user가 누군지에 따라, 다른 data를 보여줄 수 있음.
+- 즉 dynamic field를 만들 수 있음.
+- `rooms.serializers.UserDateilSerializer.get_is_oowner` 참고
+- 인스타그램 좋아요 필드가 좋은 예시
