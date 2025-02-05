@@ -2,7 +2,7 @@ from django.core.serializers import serialize
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from .models import Amenity, Room
-from users.serializer import TinyUserSerializer
+from users.serializers import TinyUserSerializer
 from categories.serializers import CategorySerializer
 
 class AmenitySerializer(ModelSerializer):

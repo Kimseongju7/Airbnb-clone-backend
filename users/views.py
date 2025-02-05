@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from tweets.models import Tweet
 from tweets.serializers import TweetSerializer
-from .serializer import UserListSerializer, UserDetailSerializer
+from .serializers import UserListSerializer, UserDetailSerializer
 from rest_framework.views import APIView
 
 # Create your views here.
