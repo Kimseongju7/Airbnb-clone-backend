@@ -48,3 +48,4 @@ class PublicUserSerializer(ModelSerializer):
 
     def get_number_of_rooms(self, user):
         return user.rooms.count();
+#

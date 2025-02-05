@@ -113,9 +113,6 @@ class ChangePassword(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        return Response("Please enter your old password and new password")
-
     def post(self, request):
         user = request.user
         old_password = request.data.get("old_password")
