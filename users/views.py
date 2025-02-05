@@ -106,3 +106,23 @@ class UserReviews(APIView):
         user = self.get_object(username)
         serializer = ReviewSerializer(user.reviews.all(), many=True)
         return Response(serializer.data)
+
+
+class ChangePassword(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response("Please enter your old password and new password")
+
+    def post(self, request):
+        user = request.user
+        old_password = request.data.get("old_password")
+        new_password = request.data.get("new_password")
+        if not old_password or not new_password:
+            raise ParseError("Old password and new password are required")
+        if not user.check_password(old_password):
+            raise ParseError("Wrong password")
+        user.set_password(new_password)
+        user.save()
+        return Response(status=status.HTTP_200_OK)

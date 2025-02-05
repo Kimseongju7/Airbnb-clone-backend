@@ -16,11 +16,7 @@
 - 순서대로 일치하는 지 확인하기 때문.
 - 근데 'me'라는 username을 가진 user가 있다면 어떻게 해야 할
 - `path('@<str:username>/')` 이런 식으로 하면 됨.
-
-[//]: # (### Change Password API)
-
-[//]: # (- 자신의 password만 바꿀 수 있게, user에게서 기존 비밀번호와 새로운 비밀번호를 받아 기존의 비밀번호를 알고 있을 경우에만 바꿀 수 있게.)
-
-[//]: # (- 이때 old_password를 비교할 때는 hash를 비교해야 한다.)
-
-[//]: # (- `user.check_password&#40;old_password&#41;`로 비교한다.)
+### Change Password API
+- 자신의 password만 바꿀 수 있게, user에게서 기존 비밀번호와 새로운 비밀번호를 받아 기존의 비밀번호를 알고 있을 경우에만 바꿀 수 있게.
+- 이때 old_password를 비교할 때는 hash를 비교해야 한다.
+- `user.check_password(old_password)`로 비교한다.
