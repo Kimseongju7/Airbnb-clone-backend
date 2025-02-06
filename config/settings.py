@@ -147,3 +147,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #Auth
 AUTH_USER_MODEL = "users.User"
+
+# MEDIA
+MEDIA_URL = "user-uploads/"
+MEDIA_ROOT = "uploads"
+
+#page
+PAGE_SIZE = 3

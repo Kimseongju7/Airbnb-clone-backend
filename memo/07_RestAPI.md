@@ -130,3 +130,19 @@ serializer = serializers.RoomSerializer(data=request.data, context={'user': requ
 - reviews를 전부 다 가져온 후 slicing을 하는 것이 아님.
 - queryset은 게으름. = 즉각적으로 평가되지 않음.
 - 그래서 모든 걸 가져오는 게 아니라 limit와 offset을 포함하는 sql문을 데이터 베이스로 보냄.
+## file upload
+- admin panel에서 사진을 업로드가고 그 사진을 보려고 하면 page not found가 뜸.
+- Django에게 파일이 저장된 위치를 알려주지 않았기 때문.
+- 기본적으로는 . 위치에 저장되지만, 경로를 바꾸기 위헤서는 `config.settings.py`에 `MEDIA_URL`과 `MEDIA_ROOT`를 설정해야 함.  
+- `MEDIA_ROOT='uploads'`로 설정하면, uploads 폴더에 저장됨. / 필요 없음. 사진을 올리면 upload라는 새로운 폴더가 생성됨.
+- 하지만 여전에 admin panel에서 사진을 볼 수 없음. user에게 어떻게 파일을 보여줄 건지 정해야 함. 어느 url에서 보여줄건지
+- `MEDIA_URL`을 설정하여 user가 업로드된 사진에 접근할 수 있게 함. 이 때 MEDIA_URL은 반드시 /로 끝나야 함.
+- 업로드 된 사진 clock시 장고가 MEDIA_URL url로 이동. 하지만 여전히 page not found가 뜸.
+- 이는 장고가 MEDIA_URL로 가는 요청을 처리하지 않기 때문.
+- 이를 해결하기 위해 `config.urls.py`에 `urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)`를 추가해야 함.
+- `setting.py` 파일에 접근한 때 `from django.conf import settings`를 import하여 어느 파일에서든 간편하게 접근할 수 있음.
+- page_size 등 필요한 것들을 setting.py에 넣어두고 간편하게 사용할 수 있음.
+- MEDIA_URL은 file을 노출하는 방법, MEDIA_ROOT는 file이 실제로 있는 위치임.
+- MEDIA_URL로 이동하는 것은 MEDIA_ROOT 폴더 안을 보라고 말하는 것임.
+- 단 이런 과정은 실제 배포 환경에서는 사용하지 않음. 이는 개발 환경에서만 사용함. 보안 문제가 있음.
+- 모르는 사람들이 code 근처에 파일을 업로드하는 것을 허용하는 것과 마찬가지 이기 때문.
