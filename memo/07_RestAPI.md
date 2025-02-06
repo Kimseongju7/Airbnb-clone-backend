@@ -146,3 +146,16 @@ serializer = serializers.RoomSerializer(data=request.data, context={'user': requ
 - MEDIA_URL로 이동하는 것은 MEDIA_ROOT 폴더 안을 보라고 말하는 것임.
 - 단 이런 과정은 실제 배포 환경에서는 사용하지 않음. 이는 개발 환경에서만 사용함. 보안 문제가 있음.
 - 모르는 사람들이 code 근처에 파일을 업로드하는 것을 허용하는 것과 마찬가지 이기 때문.
+### 파일을 다른 서버에 넣기
+- 장고는 파일의 url만 알게 되고 업로드한 파일들은 AWS나 클라우드 이미지 서버에 저장할 것임
+- 그러기 위해 media model을 수정해야 함.
+- `models.URLField()`를 사용하여 url을 저장할 것임.
+- 파일을 Cloudflare에 업로드 하면 Cloudflare가 파일을 저장하고, url을 반환함. 그리고 이 url을 django에게 주면 됨.
+## Permission_classes
+- permission_classes를 사용하여 user가 어떤 permission을 가지고 있는지 확인할 수 있음.
+- `from rest_framework.permissions import IsAuthenticated`를 import하여 사용함.
+- `permission_classes = [IsAuthenticated]`를 사용하여 user가 로그인 되어 있는지 확인할 수 있음.
+- `from rest_framework.permissions import IsAdminUser`를 import하여 사용함.
+- `permission_classes = [IsAdminUser]`를 사용하여 user가 admin인지 확인할 수 있음.
+- `from rest_framework.permissions import IsAuthenticatedOrReadOnly`를 import하여 사용함.
+- `permission_classes = [IsAuthenticatedOrReadOnly]`를 사용하여 user가 로그인 되어 있거나 읽기만 가능한지 확인할 수 있음. GET은 누구가 요청할 수 있게하고, POST, PUT, DELETE는 로그인한 사람만 요청할 수 있게 함.
