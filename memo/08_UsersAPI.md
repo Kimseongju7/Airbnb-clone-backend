@@ -34,4 +34,20 @@
 - `from django.contrib.auth import logout`로 logout 함수를 import한다.
 - `logout(request)`로 logout한다.
 - logout 시 session이 삭제된다.
-- 
+### Error의 사용
+1. ParseError 
+    - 클라이언트가 전송한 데이터 형식이 잘못되어 파싱(parsing)에 실패한 경우 사용
+2. ValidationError
+    - serializrer에서 validation에 실패한 경우 사용
+3. Response(status=404)
+   - 요청한 리소스가 존재하지 않는 경우 사용
+   - 데이터베이스에서 특정 객체를 조회했으나 존재하지 않을 때
+   - DRF의 기본 예외 처리(NotFound) 대신 커스텀 응답을 반환하고 싶을 때
+   - 단. Response(status=404) 대신 DRF의 NotFound 예외를 사용하면 일관된 오류 형식을 유지할 수 있음.
+4. Response(status=400) Bad Request
+    - 클라이언트의 요청이 잘못되었음을 의미
+    - DRF의 ValidationError 예외를 발생시키면 자동으로 400 Bad Request 응답을 반환
+5. PermissionDenied : 권한 부족
+    - 요청 자체의 문제가 아닌 권한 부족 문제
+    - APIView.dispatch() 메서드에서 PermissionDenied 예외를 발생시키면 403 Forbidden 응답을 반환
+    - PermissionDenied에 400 사용 금지. 보안 취약점 발생 가능 : 권한 문제를 데이터 문제로 오인 가능.공격자에게 불필요한 정보 제공

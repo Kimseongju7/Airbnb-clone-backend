@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import User
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound, ParseError
+from rest_framework.exceptions import NotFound, ParseError, ValidationError
 from tweets.models import Tweet
 from tweets.serializers import TweetSerializer
 from .serializers import UserListSerializer, UserDetailSerializer, PrivateUserSerializer, PublicUserSerializer
@@ -54,7 +54,7 @@ class Users(APIView):
     def post(self, request):
         password = request.data.get("password")
         if not password:
-            raise ParseError("Password is required")
+            raise ValidationError("Password is required")
         serializer = PrivateUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -63,7 +63,7 @@ class Users(APIView):
             serializer = PrivateUserSerializer(user)
             return Response(serializer.data)
         else :
-            return Response(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -118,9 +118,9 @@ class ChangePassword(APIView):
         old_password = request.data.get("old_password")
         new_password = request.data.get("new_password")
         if not old_password or not new_password:
-            raise ParseError("Old password and new password are required")
+            raise ValidationError("Old password and new password are required")
         if not user.check_password(old_password):
-            raise ParseError("Wrong password")
+            raise ValidationError("Wrong password")
         user.set_password(new_password)
         user.save()
         return Response(status=status.HTTP_200_OK)
@@ -131,13 +131,13 @@ class LogIn(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
         if not username or not password:
-            raise ParseError("Username and password are required")
+            raise ValidationError("Username and password are required")
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
             return Response("Logged in")
         else:
-            raise ParseError("Wrong username or password")
+            raise ValidationError("Wrong username or password")
 
 
 class LogOut(APIView):
