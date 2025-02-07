@@ -10,13 +10,16 @@ from rest_framework.exceptions import (
     ParseError,
     PermissionDenied
 )
-from rest_framework.status import HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
 from django.db import transaction
 from reviews.serializers import ReviewSerializer
 from django.conf import settings
 from medias.serializers import PhotoSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 class Rooms(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get(self, request):
         rooms = Room.objects.all();
         return Response(
@@ -30,37 +33,35 @@ class Rooms(APIView):
         )
 
     def post(self, request):
-        if request.user.is_authenticated:
-            serializer = RoomDetailSerializer(data = request.data)
-            if serializer.is_valid():
-                # check if category is valid
-                category_pk = request.data.get("category")
-                if not category_pk:
-                    raise ParseError("Category is required")
-                try:
-                    category = Category.objects.get(pk = category_pk)
-                except Category.DoesNotExist:
-                    raise ParseError(f"Category_pk : {category_pk} does not exist")
-                if category.kind == Category.CategoriesKindChoices.EXPERIENCES:
-                    raise ParseError("Category kind should be a room")
-                try:
-                    with transaction.atomic():
-                        new_room = serializer.save(
-                            owner=request.user,
-                            category = category
-                        )
-                        # add amenities
-                        amenities = request.data.get("amenities")
-                        for amenity_pk in amenities:
-                            amenity = Amenity.objects.get(pk=amenity_pk)
-                            new_room.amenities.add(amenity)
-                        return Response(RoomDetailSerializer(new_room).data)
-                except Exception:
-                    raise ParseError("Amenity not found")
-            else:
-                return Response(serializer.errors)
+        serializer = RoomDetailSerializer(data = request.data)
+        if serializer.is_valid():
+            # check if category is valid
+            category_pk = request.data.get("category")
+            if not category_pk:
+                raise ParseError("Category is required")
+            try:
+                category = Category.objects.get(pk = category_pk)
+            except Category.DoesNotExist:
+                raise ParseError(f"Category_pk : {category_pk} does not exist")
+            if category.kind == Category.CategoriesKindChoices.EXPERIENCES:
+                raise ParseError("Category kind should be a room")
+            try:
+                with transaction.atomic():
+                    new_room = serializer.save(
+                        owner=request.user,
+                        category = category
+                    )
+                    # add amenities
+                    amenities = request.data.get("amenities")
+                    for amenity_pk in amenities:
+                        amenity = Amenity.objects.get(pk=amenity_pk)
+                        new_room.amenities.add(amenity)
+                    return Response(RoomDetailSerializer(new_room).data)
+            except Exception:
+                raise ParseError("Amenity not found")
         else:
-            raise NotAuthenticated
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
 
 
 class RoomDetail(APIView):
@@ -140,7 +141,7 @@ class Amenities(APIView):
             amenity = serializer.save()
             return Response(AmenitySerializer(amenity).data)
         else:
-            return Response(serializer.errors)
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
 class AmenityDetail(APIView):
@@ -161,7 +162,7 @@ class AmenityDetail(APIView):
             amenity = serializer.save()
             return Response(AmenitySerializer(amenity).data)
         else:
-            return Response(serializer.errors)
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
         self.get_object(pk).delete()

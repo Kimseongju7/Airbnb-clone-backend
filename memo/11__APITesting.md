@@ -14,3 +14,12 @@
 - `self.client.put(url, data)` : url로 put request를 보내는 method. data는 dictionary 형태로 보내야 함.
 - `self.client.delete(url)` : url로 delete request를 보내는 method.
 - `self.client.login(username, password)` : login을 해야만 API를 test할 수 있음. 이 method를 사용하면 login이 됨.
+- `self.client.logout()` : logout을 해야만 API를 test할 수 있음. 이 method를 사용하면 logout이 됨.
+- `self.client.force_authenticate(user)` : user를 authenticate하고 API를 test할 수 있음.
+- test를 할 때는 test database를 사용함. data를 생성하고 지우면서 test를 진행해야 하는데, 실제 database에 영향을 주지 않기 위해 test database를 사용함.
+- 브라우저에서 보이는 data는 실제 database에 있는 데이터이기에, test code를 진행하면서 받는 값과는 다를 수 있음.
+
+## setUp method
+- test code를 작성할 때, 반복되는 코드를 줄이기 위해 setUp method를 사용함.
+- setUp method는 test code를 실행하기 전에 실행됨.
+- database를 설정할 수 있는 곳
