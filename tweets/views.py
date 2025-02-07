@@ -41,8 +41,6 @@ class TweetDetail(APIView):
 
     def put(self, request, pk):
         tweet = self.get_object(pk)
-        if not request.user.is_authenticated:
-            raise NotAuthenticated
         if tweet.user != request.user:
             raise PermissionDenied
         serializer = TweetSerializer(tweet, data=request.data)
@@ -54,8 +52,6 @@ class TweetDetail(APIView):
 
     def delete(self, request, pk):
         tweet = self.get_object(pk)
-        if not request.user.is_authenticated:
-            raise NotAuthenticated
         if tweet.user != request.user:
             raise PermissionDenied
         tweet.delete()
