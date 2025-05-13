@@ -177,6 +177,7 @@ manage.py : terminal에서 Django 명령어를 실행. 터미널에서 Django를
 ## relative name
 - rooms app도 room, direct_messages app도 room을 가지고 있고, 둘 다 user와 연결되는 경우 에러 발생.
 - 같은 이름을 가진 model이 같은 model과 연결되면 에러 발생.
+- 역방향 참조 시 사용할 이름
 ## App verbose name 수정하기
 - admin panel에서 보여지는 app의 이름을 수정하고 싶음.
 - app의 verbose name을 수정하면 됨.
